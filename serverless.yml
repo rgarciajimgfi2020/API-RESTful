@@ -20,6 +20,17 @@ provider:
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
+    - Effect: Allow
+      Action:
+        - comprehend:DetectDominantLanguage
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
+        - translate:TranslateText
+      Resource: "*"
+
+
 functions:
   create:
     handler: todos/create.create
@@ -27,6 +38,14 @@ functions:
       - http:
           path: todos
           method: post
+          cors: true
+
+  delete:
+    handler: todos/delete.delete
+    events:
+      - http:
+          path: todos/{id}
+          method: delete
           cors: true
 
   list:
@@ -52,15 +71,14 @@ functions:
           path: todos/{id}
           method: put
           cors: true
-
-  delete:
-    handler: todos/delete.delete
+  translated:
+    handler: todos/translated.get
     events:
       - http:
-          path: todos/{id}
-          method: delete
-          cors: true
-
+          path: todos/{id}/{language}
+          method: get
+          cors: true  
+  
 resources:
   Resources:
     TodosDynamoDbTable:
@@ -68,7 +86,7 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
+          - 
             AttributeName: id
             AttributeType: S
         KeySchema:
