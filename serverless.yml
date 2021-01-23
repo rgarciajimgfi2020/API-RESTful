@@ -30,7 +30,6 @@ provider:
         - translate:TranslateText
       Resource: "*"
 
-
 functions:
   create:
     handler: todos/create.create
