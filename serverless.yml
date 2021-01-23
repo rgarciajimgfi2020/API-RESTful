@@ -40,6 +40,14 @@ functions:
           method: post
           cors: true
 
+  delete:
+    handler: todos/delete.delete
+    events:
+      - http:
+          path: todos/{id}
+          method: delete
+          cors: true
+
   list:
     handler: todos/list.list
     events:
@@ -55,13 +63,7 @@ functions:
           path: todos/{id}
           method: get
           cors: true
-  translated:
-    handler: todos/translated.get
-    events:
-      - http:
-          path: todos/{id}/{language}
-          method: get
-          cors: true
+
   update:
     handler: todos/update.update
     events:
@@ -69,15 +71,14 @@ functions:
           path: todos/{id}
           method: put
           cors: true
-
-  delete:
-    handler: todos/delete.delete
+  translated:
+    handler: todos/translated.get
     events:
       - http:
-          path: todos/{id}
-          method: delete
-          cors: true
-
+          path: todos/{id}/{language}
+          method: get
+          cors: true  
+  
 resources:
   Resources:
     TodosDynamoDbTable:
@@ -85,7 +86,7 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
+          - 
             AttributeName: id
             AttributeType: S
         KeySchema:
